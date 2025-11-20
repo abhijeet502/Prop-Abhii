@@ -34,10 +34,11 @@
             content: '';
             position: absolute;
             inset: 0;
-            background-image: url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 10.457L9.954 0 20 10.457 9.954 20z' fill='%23fce7f3' fill-opacity='0.5' /%3E%3Ccircle cx='10' cy='10' r='3' fill='%23fce7f3' fill-opacity='0.7' /%3E%3C/svg%3E");
+            background-image: url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 10.457L9.954 0 20 10.457 9.954 20z' fill='%23fce7f3' fill-opacity='0.5' /%3E%3Ccircle cx='10' cy='10' r='3' fill='%23fce7f3' fill-opacity='0.7' /%3C/svg%3E");
             background-size: 80px;
             opacity: 0.7;
             animation: bgMove 30s linear infinite;
+            z-index: 0;
         }
 
         @keyframes bgMove {
@@ -45,11 +46,14 @@
             to { background-position: 800px 800px; }
         }
 
+        /* Floating Emoji Layer */
         .floating-cute {
             position: absolute;
             opacity: 0;
             font-size: 2rem;
             animation: floatUp 15s linear infinite;
+            z-index: 1;
+            pointer-events: none;
         }
 
         @keyframes floatUp {
@@ -68,7 +72,7 @@
             font-size: 1.7rem;
             font-weight: bold;
             letter-spacing: 3px;
-            z-index: 999;
+            z-index: 9999;
             transition: opacity .7s;
         }
 
@@ -113,6 +117,12 @@
             flex-wrap: wrap;
         }
 
+        /* Ensure ALL buttons stay above everything */
+        button, .no-btn, #no-btn {
+            z-index: 999999 !important;
+            position: relative;
+        }
+
         button {
             padding: 13px 28px;
             border-radius: 40px;
@@ -120,7 +130,6 @@
             font-size: 1.1rem;
             cursor: pointer;
             font-weight: 600;
-            max-width: 45%;
         }
 
         .yes-btn {
@@ -135,7 +144,7 @@
             color: var(--teddy-brown);
         }
 
-        /* Panic Shake */
+        /* Shake animation */
         .shake {
             animation: shakeAnim 0.35s ease;
         }
@@ -158,7 +167,7 @@
             opacity: 0;
             transition: 0.5s ease;
             pointer-events: none;
-            z-index: 200;
+            z-index: 9999999;
         }
 
         .heart-active {
@@ -176,7 +185,7 @@
             justify-content: center;
             align-items: center;
             transition: opacity 2s;
-            z-index: 100;
+            z-index: 1000;
         }
 
         #final-layer.active {
@@ -235,7 +244,6 @@
 
     window.onload = () => {
         createFloatingElements();
-
         setTimeout(() => {
             document.getElementById("preloader").style.opacity = "0";
             setTimeout(() => {
@@ -266,35 +274,28 @@
         }
     }
 
-    /* ----------------- FIXED RESPONSIVE NO BUTTON ----------------- */
+    /* Fix: No button always visible and on top */
     function clickNo() {
         const btn = document.getElementById("no-btn");
         noClickCount++;
 
-        // First 3 clicks → escape but stay visible
+        const maxX = window.innerWidth - btn.offsetWidth - 20;
+        const maxY = window.innerHeight - btn.offsetHeight - 20;
+
         if (noClickCount <= 3) {
-
-            const maxX = window.innerWidth - btn.offsetWidth - 15;
-            const maxY = window.innerHeight - btn.offsetHeight - 15;
-
-            const newX = Math.random() * maxX;
-            const newY = Math.random() * maxY;
-
             btn.style.position = "fixed";
-            btn.style.left = newX + "px";
-            btn.style.top = newY + "px";
+            btn.style.left = Math.random() * maxX + "px";
+            btn.style.top = Math.random() * maxY + "px";
 
-            // Add sweat panic on 3rd click 😰
             if (noClickCount === 3) {
                 btn.innerText = "No 😰";
                 btn.classList.add("shake");
                 setTimeout(() => btn.classList.remove("shake"), 350);
             }
-
             return;
         }
 
-        // 4th click → heart break animation then sad ending
+        // 4th click → heart-break + ending
         const heart = document.getElementById("heart-break");
         heart.classList.add("heart-active");
 
@@ -304,7 +305,6 @@
         }, 700);
     }
 
-    /* ------------------- YES BUTTON ------------------- */
     function clickYes() {
         confetti({
             particleCount: 150,
