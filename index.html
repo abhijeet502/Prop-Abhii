@@ -2,8 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
     <title>A Pookie Proposal</title>
+
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
@@ -29,7 +30,6 @@
             position: relative;
         }
 
-        /* Background pattern */
         body::before {
             content: '';
             position: absolute;
@@ -45,7 +45,6 @@
             to { background-position: 800px 800px; }
         }
 
-        /* Floating emojis */
         .floating-cute {
             position: absolute;
             opacity: 0;
@@ -60,8 +59,7 @@
         }
 
         #preloader {
-            position: fixed;
-            inset: 0;
+            position: fixed; inset: 0;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -74,17 +72,15 @@
             transition: opacity .7s;
         }
 
-        /* Card */
         .card {
             background: rgba(255,255,255,.4);
             backdrop-filter: blur(10px);
-            border: 2px solid rgba(255,255,255,.7);
-            border-radius: 30px;
-            padding: 3rem;
-            width: 90%;
+            border-radius: 28px;
+            padding: 2rem;
+            width: 92%;
             max-width: 550px;
             text-align: center;
-            box-shadow: 0 15px 30px rgba(0,0,0,.2);
+            box-shadow: 0 12px 28px rgba(0,0,0,.2);
             opacity: 0;
             animation: fadeInCard 1s ease forwards .5s;
             z-index: 10;
@@ -94,12 +90,16 @@
 
         h1 {
             font-family: 'Dancing Script', cursive;
-            font-size: 3.5rem;
+            font-size: 3rem;
             color: var(--primary-pink);
         }
 
+        @media (max-width: 380px) {
+            h1 { font-size: 2.4rem; }
+        }
+
         .text-content {
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             color: var(--teddy-brown);
             min-height: 90px;
             margin-top: 1rem;
@@ -108,17 +108,19 @@
         .btn-group {
             display: flex;
             justify-content: center;
-            gap: 25px;
+            gap: 18px;
             margin-top: 20px;
+            flex-wrap: wrap;
         }
 
         button {
-            padding: 15px 35px;
+            padding: 13px 28px;
             border-radius: 40px;
             border: none;
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             cursor: pointer;
             font-weight: 600;
+            max-width: 45%;
         }
 
         .yes-btn {
@@ -133,7 +135,7 @@
             color: var(--teddy-brown);
         }
 
-        /* Shake animation */
+        /* Panic Shake */
         .shake {
             animation: shakeAnim 0.35s ease;
         }
@@ -146,7 +148,24 @@
             100% { transform: translateX(0); }
         }
 
-        /* Final layer */
+        /* Heart Break */
+        #heart-break {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%,-50%) scale(0);
+            font-size: 4rem;
+            opacity: 0;
+            transition: 0.5s ease;
+            pointer-events: none;
+            z-index: 200;
+        }
+
+        .heart-active {
+            transform: translate(-50%,-50%) scale(1);
+            opacity: 1;
+        }
+
         #final-layer {
             position: fixed;
             inset: 0;
@@ -192,10 +211,12 @@
 
         <div id="appreciation-content" style="display:none; text-align:center;">
             <img src="https://media1.tenor.com/m/n6XKuq5mXkIAAAAC/milk-and-mocha-bear-couple.gif"
-                 style="width:250px; border-radius:20px; margin-bottom:20px;">
-            <h1 style="font-size:2.5rem; color:var(--primary-pink);">Yay! You're the best! 💖</h1>
+                 style="width:230px; border-radius:20px; margin-bottom:20px;">
+            <h1 style="font-size:2.3rem; color:var(--primary-pink);">Yay! You're the best! 💖</h1>
         </div>
     </main>
+
+    <div id="heart-break">💔</div>
 
     <div id="final-layer">
         <div id="footer-yes" class="final-text">
@@ -220,8 +241,8 @@
             setTimeout(() => {
                 document.getElementById("preloader").style.display = "none";
                 typeWriter();
-            }, 800);
-        }, 1500);
+            }, 900);
+        }, 1300);
     };
 
     function typeWriter() {
@@ -234,27 +255,27 @@
 
     function createFloatingElements() {
         const icons = ["🧸","💖","✨","💕","❤️"];
-        for (let k = 0; k < 25; k++) {
+        for (let k = 0; k < 20; k++) {
             let d = document.createElement("div");
             d.classList.add("floating-cute");
             d.innerHTML = icons[Math.floor(Math.random()*icons.length)];
             d.style.left = Math.random()*100 + "vw";
-            d.style.animationDuration = (10 + Math.random()*10) + "s";
-            d.style.fontSize = (1.5 + Math.random()*2) + "rem";
+            d.style.animationDuration = (9 + Math.random()*10) + "s";
+            d.style.fontSize = (1.3 + Math.random()*2) + "rem";
             document.body.appendChild(d);
         }
     }
 
-    /* ----------------- FIXED NO BUTTON ----------------- */
+    /* ----------------- FIXED RESPONSIVE NO BUTTON ----------------- */
     function clickNo() {
         const btn = document.getElementById("no-btn");
         noClickCount++;
 
-        // First 3 clicks → run away but stay visible
+        // First 3 clicks → escape but stay visible
         if (noClickCount <= 3) {
 
-            const maxX = window.innerWidth - btn.offsetWidth - 25;
-            const maxY = window.innerHeight - btn.offsetHeight - 25;
+            const maxX = window.innerWidth - btn.offsetWidth - 15;
+            const maxY = window.innerHeight - btn.offsetHeight - 15;
 
             const newX = Math.random() * maxX;
             const newY = Math.random() * maxY;
@@ -263,14 +284,24 @@
             btn.style.left = newX + "px";
             btn.style.top = newY + "px";
 
+            // Add sweat panic on 3rd click 😰
+            if (noClickCount === 3) {
+                btn.innerText = "No 😰";
+                btn.classList.add("shake");
+                setTimeout(() => btn.classList.remove("shake"), 350);
+            }
+
             return;
         }
 
-        // 4th click → panic shake + final screen
-        btn.classList.add("shake");
-        setTimeout(() => btn.classList.remove("shake"), 350);
+        // 4th click → heart break animation then sad ending
+        const heart = document.getElementById("heart-break");
+        heart.classList.add("heart-active");
 
-        triggerFadeOut("footer-no");
+        setTimeout(() => {
+            heart.classList.remove("heart-active");
+            triggerFadeOut("footer-no");
+        }, 700);
     }
 
     /* ------------------- YES BUTTON ------------------- */
