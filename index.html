@@ -133,16 +133,16 @@
             color: var(--teddy-brown);
         }
 
-        /* Shake on final no */
+        /* Shake animation */
         .shake {
-            animation: shakeAnim 0.4s ease;
+            animation: shakeAnim 0.35s ease;
         }
 
         @keyframes shakeAnim {
             0% { transform: translateX(0); }
-            25% { transform: translateX(-8px); }
-            50% { transform: translateX(8px); }
-            75% { transform: translateX(-6px); }
+            25% { transform: translateX(-10px); }
+            50% { transform: translateX(10px); }
+            75% { transform: translateX(-7px); }
             100% { transform: translateX(0); }
         }
 
@@ -250,17 +250,25 @@
         const btn = document.getElementById("no-btn");
         noClickCount++;
 
-        // First 3 clicks → run away
+        // First 3 clicks → run away but stay visible
         if (noClickCount <= 3) {
+
+            const maxX = window.innerWidth - btn.offsetWidth - 25;
+            const maxY = window.innerHeight - btn.offsetHeight - 25;
+
+            const newX = Math.random() * maxX;
+            const newY = Math.random() * maxY;
+
             btn.style.position = "fixed";
-            btn.style.left = Math.random() * (window.innerWidth - 100) + "px";
-            btn.style.top = Math.random() * (window.innerHeight - 50) + "px";
+            btn.style.left = newX + "px";
+            btn.style.top = newY + "px";
+
             return;
         }
 
-        // 4th click → final message
+        // 4th click → panic shake + final screen
         btn.classList.add("shake");
-        setTimeout(() => btn.classList.remove("shake"), 400);
+        setTimeout(() => btn.classList.remove("shake"), 350);
 
         triggerFadeOut("footer-no");
     }
@@ -282,10 +290,8 @@
 
     function triggerFadeOut(id) {
         document.getElementById("proposal-card").style.opacity = "0";
-
         const layer = document.getElementById("final-layer");
         layer.classList.add("active");
-
         document.getElementById(id).style.display = "block";
     }
 </script>
